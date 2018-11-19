@@ -1,6 +1,7 @@
 const https = require('https')
 const needle = require('needle');
 const fs = require('fs-extra');
+const Promise = require('bluebird');
 module.exports = {
     async fetchAllImages(options) {
         const url = 'https://www.reddit.com/r/'
@@ -18,32 +19,31 @@ function fetchdata(finalUrl) {
     return new Promise(function(resolve, reject) {
         needle.get(finalUrl, async(error, response) => {
             if (!error && response.statusCode == 200) {
-                let promises = []
-                console.log(`Fetched a total of ${response.body.data.children.length} posts`)
-                for (let objects of response.body.data.children) {
-                    if (objects.data.thumbnail && objects.data.thubnail !== 'self' && objects.data.url) {
-                        promises.push(downloadImages(objects.data.url, objects.data.id))
-                    }
-                }
-                console.log(`Looking for ${promises.length} images`)
-                await Promise.all(promises)
+                await downloadImagesImproved(response.body.data.children)
                 resolve(true)
             }
         });
     })
 }
 
-function downloadImages(url, name) {
-    return new Promise(function(resolve, reject) {
-        needle.get(url, (error, response) => {
+function downloadImagesImproved(url) {
+    Promise.map(url, objects => new Promise((resolve, reject) => {
+        console.log('Downloading Image: ' + objects.data.id);
+        needle.get(objects.data.url, (error, response) => {
             if (!error && response.statusCode === 200) {
-                fs.outputFile('temp/' + name, response.raw, err => {
+                fs.outputFile('temp/' + objects.data.id, response.raw, err => {
                     if (err) throw err;
-                    console.log(`Saved! ${name} from ${url}`);
+                    console.log(`Saved! ${objects.data.id} from ${objects.data.url}`);
                 });
-                resolve(true);
+                resolve();
             }
         })
-
-    })
+    }), {
+        concurrency: 4
+    }).then(() => {
+        console.log('All Image Downloaded!');
+        return true
+    }).catch(err => {
+        console.error('Failed: ' + err.message);
+    });
 }

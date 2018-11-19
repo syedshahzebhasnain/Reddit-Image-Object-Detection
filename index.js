@@ -8,7 +8,7 @@ app.get('/', async(req, res) => {
         let options = {
             sub: (req.query.sub) ? req.query.sub : 'pics',
             cat: (req.query.cat) ? req.query.cat : 'hot',
-            limit: (req.query.limit) ? req.query.limit : 10
+            limit: (req.query.limit) ? req.query.limit : 30
         }
         let results = await reddit.fetchAllImages(options)
         res.json(results)
