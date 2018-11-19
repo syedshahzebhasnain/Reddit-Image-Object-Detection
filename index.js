@@ -5,6 +5,7 @@ const port = 3000
 
 app.get('/', async(req, res) => {
     try {
+        // Set basic options for download or set defaults if Get called without parameters
         let options = {
             sub: (req.query.sub) ? req.query.sub : 'pics',
             cat: (req.query.cat) ? req.query.cat : 'hot',
