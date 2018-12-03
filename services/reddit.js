@@ -2,8 +2,9 @@ const https = require('https')
 const needle = require('needle');
 const fs = require('fs-extra');
 const Promise = require('bluebird');
+const objectDetection = require('../services/objectDetection')
 module.exports = {
-    fetchAllImages(options) {
+    fetchAllImages(options, model) {
         return new Promise(async(resolve, reject) => {
             // create URL
             const url = 'https://www.reddit.com/r/'
@@ -22,6 +23,7 @@ module.exports = {
                 fs.outputFile('temp/' + objects.data.id, file.raw, err => {
                     if (err) throw err;
                     console.log(`Saved! ${objects.data.id} from ${objects.data.url}`);
+                    objectDetection.detect('temp/' + objects.data.id, model)
                 });
                 resolve();
             }), {
