@@ -1,14 +1,18 @@
 const NUMBER_OF_CHANNELS = 3
 const fs = require('fs-extra');
 const jpeg = require('jpeg-js');
+const tf = require('@tensorflow/tfjs');
 module.exports = {
     async detect(path, model) {
-        const image = jpeg.decode(fs.readFileSync(path), true)
-        const input = imageToInput(image, NUMBER_OF_CHANNELS)
-        const results = await model.classify(input)
-        console.log("=====================")
-        console.log(results)
-        console.log("=====================")
+        try {
+            const image = jpeg.decode(fs.readFileSync('temp/' + path), true)
+            const input = await imageToInput(image, NUMBER_OF_CHANNELS)
+            const results = await model.classify(input)
+                // Write Results here
+            outputResults(results, path)
+        } catch (err) {
+            console.log('Not an Acceptable Image for Analysis')
+        }
     }
 }
 
@@ -27,6 +31,9 @@ const imageToInput = (image, numChannels) => {
     const values = imageByteArray(image, numChannels)
     const outShape = [image.height, image.width, numChannels];
     const input = tf.tensor3d(values, outShape, 'int32');
-
     return input
+}
+
+const outputResults = async(results, path) => {
+    await fs.writeJson(`temp/'${path}.json`, { results })
 }

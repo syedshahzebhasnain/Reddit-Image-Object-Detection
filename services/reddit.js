@@ -23,15 +23,15 @@ module.exports = {
                 fs.outputFile('temp/' + objects.data.id, file.raw, err => {
                     if (err) throw err;
                     console.log(`Saved! ${objects.data.id} from ${objects.data.url}`);
-                    objectDetection.detect('temp/' + objects.data.id, model)
+                    objectDetection.detect(objects.data.id, model)
                 });
                 resolve();
             }), {
                 // Set Concurrency.
                 concurrency: 4
             }).then(() => {
-                console.log('Whew! All images downloaded');
-                resolve('Whew! All images downloaded')
+                console.log("======================All operations completed. Results have been put in the temp folder==============")
+                resolve('All operations completed. Results have been put in the temp folder')
             }).catch(err => {
                 console.error('Failed: ' + err.message);
                 reject('Failed: ' + err.message)
