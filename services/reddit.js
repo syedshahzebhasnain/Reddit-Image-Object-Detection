@@ -7,6 +7,7 @@ module.exports = {
     fetchAllImages(options, model) {
         return new Promise(async(resolve, reject) => {
             // create URL
+            let resultJSON = []
             const url = 'https://www.reddit.com/r/'
             let finalUrl = url + options.sub + '/' + options.cat + '.json'
             if (options.limit) {
@@ -20,10 +21,11 @@ module.exports = {
                 console.log('Downloading Image: ' + objects.data.id);
                 const file = await needle("get", objects.data.url).catch(err => { console.log(err); return true })
                     // Write to file
-                fs.outputFile('temp/' + objects.data.id, file.raw, err => {
+                fs.outputFile('temp/' + objects.data.id, file.raw, async err => {
                     if (err) throw err;
                     console.log(`Saved! ${objects.data.id} from ${objects.data.url}`);
-                    objectDetection.detect(objects.data.id, model)
+                    let result = await objectDetection.detect(objects.data.id, model)
+                    resultJSON.push({ title: objects.data.title, imageURL: objects.data.url, result: result })
                 });
                 resolve();
             }), {
@@ -31,7 +33,7 @@ module.exports = {
                 concurrency: 4
             }).then(() => {
                 console.log("======================All operations completed. Results have been put in the temp folder==============")
-                resolve('All operations completed. Results have been put in the temp folder')
+                resolve(resultJSON)
             }).catch(err => {
                 console.error('Failed: ' + err.message);
                 reject('Failed: ' + err.message)

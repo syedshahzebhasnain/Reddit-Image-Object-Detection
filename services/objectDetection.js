@@ -8,10 +8,11 @@ module.exports = {
             const image = jpeg.decode(fs.readFileSync('temp/' + path), true)
             const input = await imageToInput(image, NUMBER_OF_CHANNELS)
             const results = await model.classify(input)
-                // Write Results here
-            outputResults(results, path)
+                // Enable this line here to write results to individual file
+                //outputResults(results, path)
+            return results
         } catch (err) {
-            console.log('Not an Acceptable Image for Analysis')
+            return 'Cannot Evaluate File/ Results not available'
         }
     }
 }
