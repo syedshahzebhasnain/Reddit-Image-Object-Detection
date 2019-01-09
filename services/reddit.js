@@ -3,6 +3,7 @@ const needle = require('needle');
 const fs = require('fs-extra');
 const Promise = require('bluebird');
 const objectDetection = require('../services/objectDetection')
+const utility = require('../services/utility')
 module.exports = {
     fetchAllImages(options, model) {
         return new Promise(async(resolve, reject) => {
@@ -26,6 +27,7 @@ module.exports = {
                     console.log(`Saved! ${objects.data.id} from ${objects.data.url}`);
                     let result = await objectDetection.detect(objects.data.id, model)
                     resultJSON.push({ title: objects.data.title, imageURL: objects.data.url, result: result })
+                    utility.clearFiles(objects.data.id)
                 });
                 resolve();
             }), {

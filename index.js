@@ -11,11 +11,14 @@ let model = null
 
 app.get('/', async(req, res) => {
     try {
+        if (!model) {
+            return res.send("Model is not loaded yet. Please try again later.")
+        }
         // Set basic options for download or set defaults if Get called without parameters
         let options = {
             sub: (req.query.sub) ? req.query.sub : 'pics',
             cat: (req.query.cat) ? req.query.cat : 'hot',
-            limit: (req.query.limit) ? req.query.limit : 10
+            limit: (req.query.limit) ? req.query.limit : 5
         }
         let results = await reddit.fetchAllImages(options, model)
         res.json(results)
