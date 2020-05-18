@@ -5,8 +5,11 @@ const tf = require('@tensorflow/tfjs');
 module.exports = {
     async detect(path, model) {
         try {
+            // Load the images in the temp path
             const image = await jpeg.decode(fs.readFileSync('temp/' + path), true)
+            // Configure the input image to be put into classifier
             const input = await imageToInput(image, NUMBER_OF_CHANNELS)
+            // Classify the image.
             const results = await model.classify(input)
                 // Enable this line here to write results to individual file
                 //outputResults(results, path)
@@ -16,6 +19,7 @@ module.exports = {
         }
     }
 }
+
 
 const imageByteArray = (image, numChannels) => {
     const pixels = image.data

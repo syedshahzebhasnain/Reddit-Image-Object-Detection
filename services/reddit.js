@@ -15,12 +15,15 @@ module.exports = {
                 finalUrl += '?limit=' + options.limit
             }
             // Get all posts
-            const receivedData = await needle("get", finalUrl).catch(err => { console.log(err) });
+            const receivedData = await needle("get", finalUrl).catch(err => { 
+                console.log(err)
+                reject('Failed: ' + err.message)
+             });
             // Create a promise list using bluebird for concurrency
             Promise.map(receivedData.body.data.children, objects => new Promise(async(resolve, reject) => {
                 // Download image
                 console.log('Downloading Image: ' + objects.data.id);
-                const file = await needle("get", objects.data.url).catch(err => { console.log(err); return true })
+                const file = await needle("get", objects.data.url).catch(err => { console.log(err); next(err) })
                     // Write to file
                 fs.outputFile('temp/' + objects.data.id, file.raw, async err => {
                     if (err) throw err;
@@ -31,7 +34,7 @@ module.exports = {
                 });
                 resolve();
             }), {
-                // Set Concurrency.
+                // Set Concurrency. Currently set for 4.
                 concurrency: 4
             }).then(() => {
                 console.log("======================All operations completed. Results have been put in the temp folder==============")
