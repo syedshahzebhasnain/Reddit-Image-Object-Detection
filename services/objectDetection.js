@@ -3,7 +3,6 @@ const fs = require('fs-extra')
 const jpeg = require('jpeg-js')
 const tf = require('@tensorflow/tfjs')
 const mobileNetModel = require('../models/mobileNet.js')
-var model = mobileNetModel.loadModel()
 module.exports = {
   async detect (fileName) {
     try {
@@ -13,6 +12,8 @@ module.exports = {
       // Configure the input image to be put into classifier
       const input = await imageToInput(image, NUMBER_OF_CHANNELS)
 
+      // Load Modal
+      var model = mobileNetModel.loadModel()
       // Classify the image.
       const results = await model.classify(input)
       return results
