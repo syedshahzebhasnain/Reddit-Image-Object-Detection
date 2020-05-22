@@ -1,7 +1,4 @@
-// @TODO : Refactor better error handling
-// @TODO : Segregate the services. Currently they are somewhat coupled.
 // @TODO : Write readme for the project
-// @TODO : Stretch goal. Need to update the models to latest version
 // @TODO : Write tests for controller and services
 
 'use strict'
@@ -31,18 +28,17 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-
   res.locals.message = err.message
-  res.locals.error = err 
+  res.locals.error = err
   // render the error page
   res.status(err.status || 500)
   res.send(err)
 })
 
-app.listen(port, async() => {
-    // Loading MobileNet here. 
-    await mobileNetModel.loadModel()
-    console.log(`Example app listening on port ${port}!`)
+app.listen(port, async () => {
+  // Loading MobileNet here.
+  await mobileNetModel.loadModel()
+  console.log(`Example app listening on port ${port}!`)
 })
 
 module.exports = app
