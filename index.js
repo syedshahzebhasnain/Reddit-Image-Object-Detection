@@ -4,72 +4,45 @@
 // @TODO : Stretch goal. Need to update the models to latest version
 // @TODO : Write tests for controller and services
 
-
+'use strict'
 // Load Services
 global.fetch = require('node-fetch')
 const express = require('express')
-const reddit = require('./services/reddit')
-const tf = require('@tensorflow/tfjs')
+const mobileNetModel = require('./models/mobileNet.js')
+const createError = require('http-errors')
+const logger = require('morgan')
+const cookieParser = require('cookie-parser')
+const mainController = require('./routes/mainController')
 
-// Load TensorFlow models
-// This may take a while. Hang on!
-const mobilenet = require('@tensorflow-models/mobilenet');
-require('@tensorflow/tfjs-node')
-let model = null
-
-// Load Express. Set port to 3000
-const app = express()
+var app = express()
 const port = 3000
 
-// handling Errors
-app.use(function (err, req, res, next) {
-    console.error(err.stack)
-    res.status(500).send('Something broke!')
-  })
+app.use(logger('dev'))
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
+app.use(cookieParser())
 
-// Controllers
+app.use('/', mainController)
 
-/*
-* @param req.query.sub {String} SubReddit name
-* @param req.query.limit {String} limit of post to analyze
-* @param req.query.cat {String} Category of posts
-*/
-app.get('/', async(req, res) => {
-    try {
-        if (!model) {
-            return res.send("Model is not loaded yet. Please try again later.")
-        }
-        /* Set basic options for download or set defaults if Get endpoint is called without parameters
-        Default Values: 
-            1- Limit : 5 
-            2- Sub : pics
-            3- Cat : hot
-        */
-        let options = {
-            sub: (req.query.sub) ? req.query.sub : 'pics',
-            cat: (req.query.cat) ? req.query.cat : 'hot',
-            limit: (req.query.limit) ? req.query.limit : 5
-        }
-        let results = await reddit.fetchAllImages(options, model)
-        res.json(results)
-    } catch (err) {
-        console.log(err)
-    }
+// catch 404 and forward to error handler
+app.use(function (req, res, next) {
+  next(createError(404))
 })
 
-/* 2 things happening here !
+// error handler
+app.use(function (err, req, res, next) {
 
-    1- Load the mobile net library for object detection
-    2- Start listening on port defined in PORT
+  res.locals.message = err.message
+  res.locals.error = err 
+  // render the error page
+  res.status(err.status || 500)
+  res.send(err)
+})
 
-*/
 app.listen(port, async() => {
-    // Loading Models Here
-    const mn = new mobilenet.MobileNet(1, 1);
-    mn.path = `https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_1.0_224/model.json`
-    await mn.load()
-    model = mn
+    // Loading MobileNet here. 
+    await mobileNetModel.loadModel()
     console.log(`Example app listening on port ${port}!`)
 })
 
-
+module.exports = app

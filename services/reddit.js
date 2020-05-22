@@ -19,6 +19,11 @@ module.exports = {
                 console.log(err)
                 reject('Failed: ' + err.message)
              });
+              
+            // Possible that search yielded nothing.
+            if(receivedData.statusCode == 302) {
+                return reject('Cannot find data using provided parameters')
+            }
             // Create a promise list using bluebird for concurrency
             Promise.map(receivedData.body.data.children, objects => new Promise(async(resolve, reject) => {
                 // Download image

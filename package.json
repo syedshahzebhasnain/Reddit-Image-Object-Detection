@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node index.js"
+        "start": "MODE=DEV nodemon ./bin/www"
     },
     "author": "",
     "license": "ISC",
@@ -17,8 +17,12 @@
         "express": "^4.16.4",
         "fs-extra": "^7.0.1",
         "jpeg-js": "^0.3.4",
+        "morgan": "^1.10.0",
         "needle": "^2.2.4",
         "node-fetch": "^2.3.0",
-        "nodemon": "^1.18.7"
+        "nodemon": "^1.18.7",
+        "lodash": "^4.17.11",
+        "cookie-parser": "~1.4.4",
+        "express-validation": "^1.0.2"
     }
 }
