@@ -11,7 +11,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@tensorflow-models/mobilenet": "^0.2.2",
+        "@tensorflow-models/mobilenet": "^2.0.4",
         "@tensorflow/tfjs": "^1.7.4",
         "@tensorflow/tfjs-node": "^1.7.4",
         "bluebird": "^3.5.3",
@@ -19,6 +19,7 @@
         "express": "^4.16.4",
         "express-validation": "^1.0.2",
         "fs-extra": "^7.0.1",
+        "image-downloader": "^4.0.1",
         "jpeg-js": "^0.3.4",
         "lodash": "^4.17.11",
         "morgan": "^1.10.0",

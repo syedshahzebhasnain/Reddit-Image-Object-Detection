@@ -5,11 +5,11 @@
 // Load Services
 global.fetch = require('node-fetch')
 const express = require('express')
-const mobileNetModel = require('./models/mobileNet.js')
 const createError = require('http-errors')
 const logger = require('morgan')
 const cookieParser = require('cookie-parser')
 const mainController = require('./routes/mainController')
+const mobileNetModel = require('./models/mobileNet')
 
 var app = express()
 const port = 3000
@@ -36,7 +36,6 @@ app.use(function (err, req, res, next) {
 })
 
 app.listen(port, async () => {
-  // Loading MobileNet here.
   await mobileNetModel.loadModel()
   console.log(`Example app listening on port ${port}!`)
 })

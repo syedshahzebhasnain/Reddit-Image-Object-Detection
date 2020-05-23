@@ -1,7 +1,7 @@
 'use strict'
 var express = require('express')
 var router = express.Router()
-const reddit = require('../services/reddit')
+const mainService = require('../services/main')
 
 /*
 * @param req.query.sub {String} SubReddit name
@@ -21,7 +21,7 @@ router.get('/', async (req, res, next) => {
       cat: (req.query.cat) ? req.query.cat : 'hot',
       limit: (req.query.limit) ? req.query.limit : 5
     }
-    const results = await reddit.fetchAllImages(options)
+    const results = await mainService.getRedditImagesAndClassify(options)
     res.json(results)
   } catch (err) {
     console.log(err)

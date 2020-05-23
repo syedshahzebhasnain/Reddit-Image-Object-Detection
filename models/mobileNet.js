@@ -1,6 +1,7 @@
+// @TODO: This needs to be refactored
 const mobilenet = require('@tensorflow-models/mobilenet')
-const tf = require('@tensorflow/tfjs')
 require('@tensorflow/tfjs-node')
+global.fetch = require('node-fetch')
 
 // Vaiables
 let mobileNetModel = null
@@ -12,14 +13,12 @@ module.exports = {
  *
  */
   async loadModel () {
+    // loading the model only once
     if (mobileNetModel !== null) {
       return mobileNetModel
     }
-    const mn = new mobilenet.MobileNet(1, 1)
-    mn.path = 'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_1.0_224/model.json'
-    mobileNetModel = await mn.load(mn)
+    mobileNetModel = await mobilenet.load()
 
-    console.log(mobileNetModel)
     return mobileNetModel
   }
 }
