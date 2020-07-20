@@ -21,7 +21,7 @@
         "fs-extra": "^7.0.1",
         "image-downloader": "^4.0.1",
         "jpeg-js": "^0.3.4",
-        "lodash": "^4.17.11",
+        "lodash": "^4.17.19",
         "morgan": "^1.10.0",
         "needle": "^2.2.4",
         "node-fetch": "^2.3.0",
